@@ -1,4 +1,4 @@
-# IoT Entrega Final
+# temperature-monitor
 
 This project is the final delivery for the IoT course. It includes an IoT system that monitors temperature and controls windows using MQTT, InfluxDB, Node-RED, and Grafana.
 
@@ -19,8 +19,8 @@ This project is the final delivery for the IoT course. It includes an IoT system
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/jurten/iot-entrega-final.git
-    cd iot-entrega-final
+    git clone https://github.com/cd-paliv/temperature-monitor
+    cd temperature-monitor
     ```
 
 2. Start the Docker services:
@@ -28,14 +28,25 @@ This project is the final delivery for the IoT course. It includes an IoT system
     docker-compose up -d
     ```
 
-3. Upload the  code to your ESP32 using the Arduino IDE.
+3. Upload the code in `central/central.ino` to your ESP32.
+
+The ESP will connect to the WiFi and start publishing temperature data to the MQTT broker. The Node-RED flows will receive the data, store it in InfluxDB, and send a notification if the temperature is above a certain threshold.
 
 ## Node-RED Flows
 
 The Node-RED flows are configured to:
 - Receive temperature data from the MQTT broker.
-- Store the data in InfluxDB.
-- Send notifications via Telegram.
+- Map the values to the correct format and verify its integrity.
+    - Store the data in InfluxDB.
+    - Check if the temperature is above a certain threshold.
+        - If it is, send a notification via Telegram.
+- If a message is received, switch to define functionality:
+    - **/estado**: Allows the user to obtain the current state, including the current temperature and window status.
+    - **/abrir**: Allows the user to open the windows if the motor is not active or the windows are closed.
+    - **/cerrar**: Allows the user to close the windows if the motor is not active or the windows are open.
+    - If another message is sent, a welcome message is displayed with the available options.
+
+![Node-RED Flow](docs/imgs/node-red-flow.png)
 
 ## Grafana Dashboard
 
